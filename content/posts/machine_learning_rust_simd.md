@@ -1,7 +1,7 @@
 ---
 title: "Machine Learning, Rust and Simd"
 date: 2019-10-28T03:00:04-03:00
-draft: false
+draft: true
 ---
 
 In the [last post](/posts/botejao_a_motivation_to_write_rust) about 
