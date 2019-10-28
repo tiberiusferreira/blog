@@ -8,12 +8,12 @@ When learning Rust I started many toy projects. One of them was [Botejão](https
 
 It was never meant to be anything more than a Telegram Bot to check my universities (UNICAMP) [daily menu](https://www.prefeitura.unicamp.br/servicos/divisao-de-alimentacao/cardapio-dos-restaurantes). In the beginning users asked the bot for the menu and then got a reply.
 
-<img src="/posts/botejao_v1.jpeg" width="300">
+<img src="/post_images/p1/botejao_v1.jpeg" width="300">
  
 
 Later it got a few upgrades and now it sends the day's menu every night to a [channel](https://t.me/botejao_unicamp).
 
-<img src="/posts/botejao_v2.jpeg" width="300">
+<img src="/post_images/p1/botejao_v2.jpeg" width="300">
 
 However, I always felt like this bot could do more. There are already many good Telegram bots from where one can check 
 today's menu such as @BandeconatoBot and @BandejaoBot. So showing the menu is a good start, but not a differentiating factor.
@@ -36,7 +36,8 @@ As one can image, in order to install a camera and start taking photos from the 
 So I sent an email to [Smart Campus](http://smartcampus.prefeitura.unicamp.br) the organization inside UNICAMP which seemed the most appropriate. 
 We had a meeting and they revealed that other students had the same idea before and that they could provide and install the camera.
  
-However, they would only do it if the image never left the device and the only output as how many people were in the line.
+However, they would only do it if the image never left the device and the only output as how many people were in the line,
+for privacy reasons.
  This was the reason previous attempts were not successful. 
  
 All I heard was the excuse I needed to dip my toes into Machine Learning.

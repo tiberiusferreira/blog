@@ -7,7 +7,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Posts - TiberiusBlog</title><script type="application/ld+json">
+  <title>Machine Learning, Rust and Simd - TiberiusBlog</title>
+  <meta name="description" content="In the last post about Botejão, my Telegram Menu Bot, I discussed a feature I would like to add to it: allow the user to see how many people are in the restaurants line.
+I also mentioned that the university itself would only install and allow the use of the camera if the processing was done on-device and the images never left it. The only output would be how many people are in the line, through an API, for privacy reasons."><script type="application/ld+json">
 {
     "@context": "http://schema.org",
     "@type": "WebSite",
@@ -27,13 +29,65 @@
   
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/tiberiusferreira.github.io\/blog\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/tiberiusferreira.github.io\/blog\/posts\/machine_learning_rust_simd\/",
+          "name": "Machine learning, rust and simd"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : ""
+  },
+  "headline": "Machine Learning, Rust and Simd",
+  "description" : "In the last post about Botejão, my Telegram Menu Bot, I discussed a feature I would like to add to it: allow the user to see how many people are in the restaurants line.\nI also mentioned that the university itself would only install and allow the use of the camera if the processing was done on-device and the images never left it. The only output would be how many people are in the line, through an API, for privacy reasons.",
+  "inLanguage" : "en",
+  "wordCount":  280 ,
+  "datePublished" : "2019-10-28T03:00:04",
+  "dateModified" : "2019-10-28T03:00:04",
+  "image" : "https:\/\/tiberiusferreira.github.io\/blog\/",
+  "keywords" : [ "" ],
+  "mainEntityOfPage" : "https:\/\/tiberiusferreira.github.io\/blog\/posts\/machine_learning_rust_simd\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/tiberiusferreira.github.io\/blog\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/tiberiusferreira.github.io\/blog\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
 
-<meta property="og:title" content="Posts" />
-<meta property="og:url" content="https://tiberiusferreira.github.io/blog/posts/" />
+<meta property="og:title" content="Machine Learning, Rust and Simd" />
+<meta property="og:description" content="In the last post about Botejão, my Telegram Menu Bot, I discussed a feature I would like to add to it: allow the user to see how many people are in the restaurants line.
+I also mentioned that the university itself would only install and allow the use of the camera if the processing was done on-device and the images never left it. The only output would be how many people are in the line, through an API, for privacy reasons.">
+<meta property="og:url" content="https://tiberiusferreira.github.io/blog/posts/machine_learning_rust_simd/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="TiberiusBlog" />
 
-  <meta name="twitter:title" content="Posts" />
+  <meta name="twitter:title" content="Machine Learning, Rust and Simd" />
+  <meta name="twitter:description" content="In the last post about Botejão, my Telegram Menu Bot, I discussed a feature I would like to add to it: allow the user to see how many people are in the restaurants line.
+I also mentioned that the …">
   <meta name="twitter:card" content="summary" />
   <meta name="generator" content="Hugo 0.59.0" />
   <link rel="alternate" href="https://tiberiusferreira.github.io/blog/index.xml" type="application/rss+xml" title="TiberiusBlog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
@@ -156,7 +210,7 @@
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="posts-heading">
               
-                <h1>Posts</h1>
+                <h1>Machine Learning, Rust and Simd</h1>
               
               
                 <hr class="small">
@@ -172,95 +226,84 @@
 
 
     
-  <div class="container" role="main">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
         
-        <div class="posts-list">
+
+<p>In the <a href="https://tiberiusferreira.github.io/blog/posts/botejao_a_motivation_to_write_rust">last post</a> about
+<a href="https://github.com/tiberiusferreira/botejao">Botejão</a>, my Telegram Menu Bot,
+ I discussed a feature I would like to add to it:
+allow the user to see how many people are in the restaurants line.</p>
+
+<p>I also mentioned that the university itself would only install and allow the
+use of the camera if the processing was done on-device and the images never left it.
+The only output would be how many people are in the line, through an API, for privacy reasons.</p>
+
+<p>I would really like to get access to an image as output, anonymized of course, to let the users
+check by themselves if the line is too long. It would also help debug any weird API results.</p>
+
+<h2 id="simple-goals">Simple Goals</h2>
+
+<ul>
+<li>From an image output how many people are in it</li>
+<li>Output an anonymized image (Could be useful for debugging and if done)</li>
+<li>Run on a Raspberry Pi 3B</li>
+</ul>
+
+<p>So I went ahead and took some sample pictures:</p>
+
+<p><img src="https://tiberiusferreira.github.io/blog/post_images/p2/p1_day.png" width="1000"></p>
+
+<p>Its 2019, we have (almost) self driving cars, so surely there are many good solutions to person
+ recognition in images.</p>
+
+<p>Googling &ldquo;State of the art pedestrian recognition&rdquo; quickly lead me to <a href="https://pjreddie.com/darknet/yolo/">Yolo</a></p>
+
+<p>After compiling, I tested on the sample image and was quite pleased with the results.</p>
+
+<p><img src="https://tiberiusferreira.github.io/blog/post_images/p2/p1_det.png" width="1000"></p>
+
+<p>It even worked when it was dark:</p>
+
+<p><img src="https://tiberiusferreira.github.io/blog/post_images/p2/p2.png" width="1000"></p>
+
+<p><img src="https://tiberiusferreira.github.io/blog/post_images/p2/p2_det.png" width="1000"></p>
+
+<p>Sadly running the lastest Yolo-V3 took almost half a minute
+on my 2017 Macbook Pro CPU and upwards of 1.6GB of RAM.
+While the CPU time would be much worse on the Raspberry, it would not
+run at all because the model 3B only has 1GB of RAM.</p>
+
+<p>Normally these models are meant to be run on a Nvidia GPU (CUDA) or
+specialized hardware such as <a href="https://coral.withgoogle.com/products/accelerator/">Googles TPU</a> .</p>
+
+
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
           
-            <article class="post-preview">
-    <a href="https://tiberiusferreira.github.io/blog/posts/machine_learning_rust_simd/">
-        <h2 class="post-title">Machine Learning, Rust and Simd</h2>
-        
-        
-        
-    </a>
-
-    <p class="post-meta">
-        <span class="post-meta">
-  
-  
-  <i class="fas fa-calendar"></i>&nbsp;Posted on October 28, 2019
-  
-  
-  
-  
-    
-      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;
-    
-  
-  
-</span>
-
-
-    </p>
-    <div class="post-entry">
-        
-        In the last post about Botejão, my Telegram Menu Bot, I discussed a feature I would like to add to it: allow the user to see how many people are in the restaurants line.
-I also mentioned that the university itself would only install and allow the use of the camera if the processing was done on-device and the images never left it. The only output would be how many people are in the line, through an API, for privacy reasons.
-        <a href="https://tiberiusferreira.github.io/blog/posts/machine_learning_rust_simd/" class="post-read-more">[Read More]</a>
-        
-    </div>
-
-    
-
-</article>
+            <li class="previous">
+              <a href="https://tiberiusferreira.github.io/blog/posts/botejao_a_motivation_to_write_rust/" data-toggle="tooltip" data-placement="top" title="Botejão - A motivation to write Rust">&larr; Previous Post</a>
+            </li>
           
-            <article class="post-preview">
-    <a href="https://tiberiusferreira.github.io/blog/posts/botejao_a_motivation_to_write_rust/">
-        <h2 class="post-title">Botejão - A motivation to write Rust</h2>
-        
-        
-        
-    </a>
-
-    <p class="post-meta">
-        <span class="post-meta">
-  
-  
-  <i class="fas fa-calendar"></i>&nbsp;Posted on October 27, 2019
-  
-  
-  
-  
-    
-      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;
-    
-  
-  
-</span>
-
-
-    </p>
-    <div class="post-entry">
-        
-        When learning Rust I started many toy projects. One of them was Botejão.
-It was never meant to be anything more than a Telegram Bot to check my universities (UNICAMP) daily menu. In the beginning users asked the bot for the menu and then got a reply.
-Later it got a few upgrades and now it sends the day&rsquo;s menu every night to a channel.
-However, I always felt like this bot could do more.
-        <a href="https://tiberiusferreira.github.io/blog/posts/botejao_a_motivation_to_write_rust/" class="post-read-more">[Read More]</a>
-        
-    </div>
-
-    
-
-</article>
           
-        </div>
-        
-      </div>
+        </ul>
+      
+
+
+      
+
     </div>
   </div>
+</div>
 
       
 <footer>
