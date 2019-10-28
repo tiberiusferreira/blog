@@ -3,34 +3,34 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://example.org/posts/botejao_a_motivation_to_write_rust/</loc>
+    <loc>https://tiberiusferreira.github.io/blog/posts/botejao_a_motivation_to_write_rust/</loc>
     <lastmod>2019-10-27T17:23:34-03:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/posts/</loc>
+    <loc>https://tiberiusferreira.github.io/blog/posts/</loc>
     <lastmod>2019-10-27T17:23:34-03:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/</loc>
+    <loc>https://tiberiusferreira.github.io/blog/</loc>
     <lastmod>2019-10-27T17:23:34-03:00</lastmod>
   </url>
   
   <url>
-    <loc>http://example.org/page/about/</loc>
+    <loc>https://tiberiusferreira.github.io/blog/page/about/</loc>
   </url>
   
   <url>
-    <loc>http://example.org/categories/</loc>
+    <loc>https://tiberiusferreira.github.io/blog/categories/</loc>
   </url>
   
   <url>
-    <loc>http://example.org/page/</loc>
+    <loc>https://tiberiusferreira.github.io/blog/page/</loc>
   </url>
   
   <url>
-    <loc>http://example.org/tags/</loc>
+    <loc>https://tiberiusferreira.github.io/blog/tags/</loc>
   </url>
   
 </urlset>

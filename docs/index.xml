@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>TiberiusBlog</title>
-    <link>http://example.org/</link>
+    <link>https://tiberiusferreira.github.io/blog/</link>
     <description>Recent content on TiberiusBlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 27 Oct 2019 17:23:34 -0300</lastBuildDate>
     
-	<atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://tiberiusferreira.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Botejão - A motivation to write Rust</title>
-      <link>http://example.org/posts/botejao_a_motivation_to_write_rust/</link>
+      <link>https://tiberiusferreira.github.io/blog/posts/botejao_a_motivation_to_write_rust/</link>
       <pubDate>Sun, 27 Oct 2019 17:23:34 -0300</pubDate>
       
-      <guid>http://example.org/posts/botejao_a_motivation_to_write_rust/</guid>
+      <guid>https://tiberiusferreira.github.io/blog/posts/botejao_a_motivation_to_write_rust/</guid>
       <description>When learning Rust I started many toy projects. One of them was Botejão.
 It was never meant to be anything more than a Telegram Bot to check my universities (UNICAMP) daily menu. In the beginning users would need to ask the bot for the menu and then get a reply.
 Later it got a few upgrades and now it sends the day&amp;rsquo;s menu every night to a channel.
@@ -25,10 +25,10 @@ However, I always felt like this bot could do more.</description>
     
     <item>
       <title>About me</title>
-      <link>http://example.org/page/about/</link>
+      <link>https://tiberiusferreira.github.io/blog/page/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://example.org/page/about/</guid>
+      <guid>https://tiberiusferreira.github.io/blog/page/about/</guid>
       <description>I&amp;rsquo;m just a guy who really likes writing Rust.</description>
     </item>
     
