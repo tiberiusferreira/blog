@@ -2,6 +2,7 @@ baseURL = "https://tiberiusferreira.github.io/blog/"
 languageCode = "en-us"
 title = "TiberiusBlog"
 theme = "beautifulhugo"
+canonifyurls = "true"
 publishDir = "docs"
 [[menu.main]]
     name = "Blog"

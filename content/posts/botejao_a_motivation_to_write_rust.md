@@ -9,6 +9,7 @@ When learning Rust I started many toy projects. One of them was [Botejão](https
 It was never meant to be anything more than a Telegram Bot to check my universities (UNICAMP) [daily menu](https://www.prefeitura.unicamp.br/servicos/divisao-de-alimentacao/cardapio-dos-restaurantes). In the beginning users would need to ask the bot for the menu and then get a reply.
 
 <img src="/posts/botejao_v1.jpeg" width="300">
+ 
 
 Later it got a few upgrades and now it sends the day's menu every night to a [channel](https://t.me/botejao_unicamp).
 
