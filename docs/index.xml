@@ -13,10 +13,10 @@
     
     <item>
       <title>Machine Learning, Rust and SIMD - I</title>
-      <link>https://tiberiusferreira.github.io/blog/posts/machine_learning_rust_simd/</link>
+      <link>https://tiberiusferreira.github.io/blog/posts/machine_learning_rust_simd_i/</link>
       <pubDate>Mon, 28 Oct 2019 03:00:04 -0300</pubDate>
       
-      <guid>https://tiberiusferreira.github.io/blog/posts/machine_learning_rust_simd/</guid>
+      <guid>https://tiberiusferreira.github.io/blog/posts/machine_learning_rust_simd_i/</guid>
       <description>In the last post about Botejão, my Telegram Menu Bot, I discussed a feature I would like to add to it: allow the user to see how many people are in the restaurants line.
 I also mentioned that the university itself would only install and allow the use of the camera if the processing was done on-device and the images never left it. The only output would be how many people are in the line, through an API, for privacy reasons.</description>
     </item>
