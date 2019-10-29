@@ -7,11 +7,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Botejão - A motivation to write Rust - TiberiusBlog</title>
-  <meta name="description" content="When learning Rust I started many toy projects. One of them was Botejão.
-It was never meant to be anything more than a Telegram Bot to check my universities (UNICAMP) daily menu. In the beginning users asked the bot for the menu and then got a reply.
-Later it got a few upgrades and now it sends the day&rsquo;s menu every night to a channel.
-However, I always felt like this bot could do more."><script type="application/ld+json">
+  <title>Machine Learning, Rust and SIMD - I - TiberiusBlog</title>
+  <meta name="description" content="In the last post about Botejão, my Telegram Menu Bot, I discussed a feature I would like to add to it: allow the user to see how many people are in the restaurants line.
+I also mentioned that the university itself would only install and allow the use of the camera if the processing was done on-device and the images never left it. The only output would be how many people are in the line, through an API, for privacy reasons."><script type="application/ld+json">
 {
     "@context": "http://schema.org",
     "@type": "WebSite",
@@ -46,8 +44,8 @@ However, I always felt like this bot could do more."><script type="application/l
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "https:\/\/tiberiusferreira.github.io\/blog\/posts\/botejao_a_motivation_to_write_rust\/",
-          "name": "Botejão a motivation to write rust"
+          "@id": "https:\/\/tiberiusferreira.github.io\/blog\/posts\/machine_learning_rust_simd\/",
+          "name": "Machine learning, rust and s i m d i"
         }
     }]
 }
@@ -58,15 +56,15 @@ However, I always felt like this bot could do more."><script type="application/l
   "author": {
     "name" : ""
   },
-  "headline": "Botejão - A motivation to write Rust",
-  "description" : "When learning Rust I started many toy projects. One of them was Botejão.\nIt was never meant to be anything more than a Telegram Bot to check my universities (UNICAMP) daily menu. In the beginning users asked the bot for the menu and then got a reply.\nLater it got a few upgrades and now it sends the day\x26rsquo;s menu every night to a channel.\nHowever, I always felt like this bot could do more.",
+  "headline": "Machine Learning, Rust and SIMD - I",
+  "description" : "In the last post about Botejão, my Telegram Menu Bot, I discussed a feature I would like to add to it: allow the user to see how many people are in the restaurants line.\nI also mentioned that the university itself would only install and allow the use of the camera if the processing was done on-device and the images never left it. The only output would be how many people are in the line, through an API, for privacy reasons.",
   "inLanguage" : "en",
-  "wordCount":  356 ,
-  "datePublished" : "2019-10-27T17:23:34",
-  "dateModified" : "2019-10-27T17:23:34",
+  "wordCount":  655 ,
+  "datePublished" : "2019-10-28T03:00:04",
+  "dateModified" : "2019-10-28T03:00:04",
   "image" : "https:\/\/tiberiusferreira.github.io\/blog\/",
   "keywords" : [ "" ],
-  "mainEntityOfPage" : "https:\/\/tiberiusferreira.github.io\/blog\/posts\/botejao_a_motivation_to_write_rust\/",
+  "mainEntityOfPage" : "https:\/\/tiberiusferreira.github.io\/blog\/posts\/machine_learning_rust_simd\/",
   "publisher" : {
     "@type": "Organization",
     "name" : "https:\/\/tiberiusferreira.github.io\/blog\/",
@@ -80,18 +78,16 @@ However, I always felt like this bot could do more."><script type="application/l
 }
 </script>
 
-<meta property="og:title" content="Botejão - A motivation to write Rust" />
-<meta property="og:description" content="When learning Rust I started many toy projects. One of them was Botejão.
-It was never meant to be anything more than a Telegram Bot to check my universities (UNICAMP) daily menu. In the beginning users asked the bot for the menu and then got a reply.
-Later it got a few upgrades and now it sends the day&rsquo;s menu every night to a channel.
-However, I always felt like this bot could do more.">
-<meta property="og:url" content="https://tiberiusferreira.github.io/blog/posts/botejao_a_motivation_to_write_rust/" />
+<meta property="og:title" content="Machine Learning, Rust and SIMD - I" />
+<meta property="og:description" content="In the last post about Botejão, my Telegram Menu Bot, I discussed a feature I would like to add to it: allow the user to see how many people are in the restaurants line.
+I also mentioned that the university itself would only install and allow the use of the camera if the processing was done on-device and the images never left it. The only output would be how many people are in the line, through an API, for privacy reasons.">
+<meta property="og:url" content="https://tiberiusferreira.github.io/blog/posts/machine_learning_rust_simd/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="TiberiusBlog" />
 
-  <meta name="twitter:title" content="Botejão - A motivation to write Rust" />
-  <meta name="twitter:description" content="When learning Rust I started many toy projects. One of them was Botejão.
-It was never meant to be anything more than a Telegram Bot to check my universities (UNICAMP) daily menu. In the beginning …">
+  <meta name="twitter:title" content="Machine Learning, Rust and SIMD - I" />
+  <meta name="twitter:description" content="In the last post about Botejão, my Telegram Menu Bot, I discussed a feature I would like to add to it: allow the user to see how many people are in the restaurants line.
+I also mentioned that the …">
   <meta name="twitter:card" content="summary" />
   <meta name="generator" content="Hugo 0.59.0" />
   <link rel="alternate" href="https://tiberiusferreira.github.io/blog/index.xml" type="application/rss+xml" title="TiberiusBlog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
@@ -214,7 +210,7 @@ It was never meant to be anything more than a Telegram Bot to check my universit
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="posts-heading">
               
-                <h1>Botejão - A motivation to write Rust</h1>
+                <h1>Machine Learning, Rust and SIMD - I</h1>
               
               
                 <hr class="small">
@@ -236,42 +232,98 @@ It was never meant to be anything more than a Telegram Bot to check my universit
       <article role="main" class="blog-post">
         
 
-<p>When learning Rust I started many toy projects. One of them was <a href="https://github.com/tiberiusferreira/botejao">Botejão</a>.</p>
+<p>In the <a href="https://tiberiusferreira.github.io/blog/posts/botejao_a_motivation_to_write_rust">last post</a> about
+<a href="https://github.com/tiberiusferreira/botejao">Botejão</a>, my Telegram Menu Bot,
+ I discussed a feature I would like to add to it:
+allow the user to see how many people are in the restaurants line.</p>
 
-<p>It was never meant to be anything more than a Telegram Bot to check my universities (UNICAMP) <a href="https://www.prefeitura.unicamp.br/servicos/divisao-de-alimentacao/cardapio-dos-restaurantes">daily menu</a>. In the beginning users asked the bot for the menu and then got a reply.</p>
+<p>I also mentioned that the university itself would only install and allow the
+use of the camera if the processing was done on-device and the images never left it.
+The only output would be how many people are in the line, through an API, for privacy reasons.</p>
 
-<p><img src="https://tiberiusferreira.github.io/blog/post_images/p1/botejao_v1.jpeg" width="300"></p>
+<p>I would really like to get access to an image as output, anonymized of course, to let the users
+check by themselves if the line is too long. It would also help debug any weird API results.</p>
 
-<p>Later it got a few upgrades and now it sends the day&rsquo;s menu every night to a <a href="https://t.me/botejao_unicamp">channel</a>.</p>
+<h2 id="simple-goals">Simple Goals</h2>
 
-<p><img src="https://tiberiusferreira.github.io/blog/post_images/p1/botejao_v2.jpeg" width="300"></p>
+<ul>
+<li>From an image output how many people are in it</li>
+<li>Output an anonymized image (Could be useful for debugging and to inspect visually how many people are in the actual line)</li>
+<li>Run on a Raspberry Pi 3B (this is the device provided by <a href="http://smartcampus.prefeitura.unicamp.br">Smart Campus</a>)</li>
+</ul>
 
-<p>However, I always felt like this bot could do more. There are already many good Telegram bots from where one can check
-today&rsquo;s menu such as @BandeconatoBot and @BandejaoBot. So showing the menu is a good start, but not a differentiating factor.</p>
+<p>So I went ahead and took some sample pictures:</p>
 
-<h2 id="a-differentiating-feature">A differentiating feature</h2>
+<p><img src="https://tiberiusferreira.github.io/blog/post_images/p2/p1_day.png" width="1000"></p>
 
-<p>At my university the line to get inside the restaurant can vary drastically depending on the menu, hour of the day and period of the year.</p>
+<p>Its 2019, we have (almost) self driving cars, so surely there are many good solutions to person
+ recognition in images.</p>
 
-<p>For example, students join the university at the beginning of the year and for the first few months most of them go to the restaurants.
-By the second half of the year, the novelty factor wears off and some of them start cooking at home or eating elsewhere.</p>
+<p>Googling &ldquo;State of the art pedestrian recognition&rdquo; quickly lead me to <a href="https://pjreddie.com/darknet/yolo/">Yolo</a></p>
 
-<p>All in all, it is really hard to predict if there will be a line or not given a date and time of the day.</p>
+<p>After compiling, I tested on the sample image and was quite pleased with the results.</p>
 
-<p>So I went for the simplest solution: the bot should send an image of the current restaurant line so the user can decide to go now or later.</p>
+<p><img src="https://tiberiusferreira.github.io/blog/post_images/p2/p1_det.png" width="1000"></p>
 
-<h2 id="getting-permission">Getting permission</h2>
+<p>It even worked when it was dark:</p>
 
-<p>As one can image, in order to install a camera and start taking photos from the campus I need permission from the university&rsquo;s itself.</p>
+<p><img src="https://tiberiusferreira.github.io/blog/post_images/p2/p2.png" width="1000"></p>
 
-<p>So I sent an email to <a href="http://smartcampus.prefeitura.unicamp.br">Smart Campus</a> the organization inside UNICAMP which seemed the most appropriate.
-We had a meeting and they revealed that other students had the same idea before and that they could provide and install the camera.</p>
+<p><img src="https://tiberiusferreira.github.io/blog/post_images/p2/p2_det.png" width="1000"></p>
 
-<p>However, they would only do it if the image never left the device and the only output as how many people were in the line,
-for privacy reasons.
- This was the reason previous attempts were not successful.</p>
+<p>Sadly running the lastest Yolo-V3 took almost half a minute
+on my 2017 Macbook Pro CPU and upwards of 1.6GB of RAM.
+While the CPU time would be much worse on the Raspberry, it would not
+run at all because the model 3B only has 1GB of RAM.</p>
 
-<p>All I heard was the excuse I needed to dip my toes into Machine Learning.</p>
+<p>Normally these models are meant to be run on a Nvidia GPU (CUDA) or
+specialized hardware such as <a href="https://coral.withgoogle.com/products/accelerator/">Googles TPU</a>.</p>
+
+<p>Google&rsquo;s USB TPU accelerator and a Tensor Flow version of Yolo, <a href="https://github.com/thtrieu/darkflow.git">DarkFlow</a>, would be
+one solution. However, there is no budget for it.  Also there is no need for real time detection, one update every few
+ minutes is fine, so I might be able to get away with a CPU implementation.</p>
+
+<p>The original Yolo implementation is done in pure C code which seems like
+ a good opportunity to learn about Rusts FFI and see how far I can take it with
+ Rusts SIMD and multi-threading support.</p>
+
+<p>There is a lighter version of Yolo: Yolo-tiny which requires much less RAM and is much faster,
+ however it failed to detect some people in the images which would make anonymizing them much harder, so it was a non-starter.</p>
+
+<h2 id="anonymization">Anonymization</h2>
+
+<p>After getting the results shown above, I was pretty confident I could trust Yolo to put bounding boxes
+around each person. So it was just a matter of digging into the codebase and changing it to fill the
+whole box instead of just drawing a contour. By the tenth <em>Segmentatation Fault</em> most of my C memories
+had come back and I had some results to show.</p>
+
+<p><img src="https://tiberiusferreira.github.io/blog/post_images/p2/filled_boxes.jpg" width="1000"></p>
+
+<h2 id="getting-it-to-work-on-a-raspberry">Getting it to work on a Raspberry</h2>
+
+<p>After compiling Yolo and running it for the first time on the Raspberry I was met with a the famous <em>Segmentatation Fault</em>.</p>
+
+<p>I expected it to run out of memory, but not crash immediately. Switching the configuration and neural net weights to Yolo-tiny
+gave the same result. Eventually I was lead to a github issue:  <a href="https://github.com/pjreddie/darknet/issues/823">YOLO: segmentation fault on RaspberryPi</a>
+and switched to another a Yolo fork: <a href="https://github.com/AlexeyAB/darknet">https://github.com/AlexeyAB/darknet</a> and ported my changes.</p>
+
+<p>By changing YoloV3&rsquo;s height and width configuration to 384 instead of the original 608 I managed to run it
+within the 1GB of RAM of the Raspberry while still detecting every person. It took around <em>5 minutes</em> to process one image.</p>
+
+<pre><code>real	5m36.687s
+user	5m12.121s
+sys	0m1.680s
+</code></pre>
+
+<p>Enabling OpenMP dropped it to less than 2m which is quite a speedup.</p>
+
+<pre><code>C ARM OpenMP
+real	1m44.369s
+user	5m26.866s
+sys	0m1.541s
+</code></pre>
+
+<p>On part II I will explore my attempts to identify and optimize the hot parts of the C code.</p>
 
 
         
@@ -284,10 +336,10 @@ for privacy reasons.
       
         <ul class="pager blog-pager">
           
-          
-            <li class="next">
-              <a href="https://tiberiusferreira.github.io/blog/posts/machine_learning_rust_simd/" data-toggle="tooltip" data-placement="top" title="Machine Learning, Rust and SIMD - I">Next Post &rarr;</a>
+            <li class="previous">
+              <a href="https://tiberiusferreira.github.io/blog/posts/botejao_a_motivation_to_write_rust/" data-toggle="tooltip" data-placement="top" title="Botejão - A motivation to write Rust">&larr; Previous Post</a>
             </li>
+          
           
         </ul>
       
