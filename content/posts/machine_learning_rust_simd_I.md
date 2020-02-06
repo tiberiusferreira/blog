@@ -57,7 +57,7 @@ one solution. However, there is no budget for it.  Also there is no need for rea
  a good opportunity to learn about Rusts FFI and see how far I can take it with 
  Rusts SIMD and multi-threading support.
  
- There is a lighter version of Yolo: Yolo-tiny which requires much less RAM and is much faster, 
+ There is a lighter version of Yolo: Yolo-Tiny which requires much less RAM and is much faster, 
  however it failed to detect some people in the images which would make anonymizing them much harder, so it was a non-starter.
  
  
@@ -65,7 +65,7 @@ one solution. However, there is no budget for it.  Also there is no need for rea
 
 After getting the results shown above, I was pretty confident I could trust Yolo to put bounding boxes
 around each person. So it was just a matter of digging into the codebase and changing it to fill the
-whole box instead of just drawing a contour. By the tenth _Segmentatation Fault_ most of my C memories
+whole box instead of just drawing a contour. By the tenth _Segmentation Fault_ most of my C memories
 had come back and I had some results to show.
 
  
@@ -74,7 +74,7 @@ had come back and I had some results to show.
 
 ## Getting it to work on a Raspberry
 
-After compiling Yolo and running it for the first time on the Raspberry I was met with a the famous _Segmentatation Fault_.
+After compiling Yolo and running it for the first time on the Raspberry I was met with a the famous _Segmentation Fault_.
 
 I expected it to run out of memory, but not crash immediately. Switching the configuration and neural net weights to Yolo-tiny
 gave the same result. Eventually I was lead to a github issue:  [YOLO: segmentation fault on RaspberryPi](https://github.com/pjreddie/darknet/issues/823)
@@ -98,7 +98,7 @@ user	5m26.866s
 sys	0m1.541s
 ```
 
-On part II I will explore my attempts to identify and optimize the hot parts of the C code. 
+On part II I will explore my attempts at identifying and optimizing the hot parts of the C code. 
 
 
 
