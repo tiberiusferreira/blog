@@ -1,5 +1,5 @@
 ---
-title: "Botejão - A motivation to write Rust"
+title: "Botejão - An excuse to write Rust"
 date: 2019-10-27T17:23:34-03:00
 draft: false
 ---

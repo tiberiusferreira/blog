@@ -4,7 +4,7 @@ date: 2019-10-28T03:00:04-03:00
 draft: false
 ---
 
-In the [last post](/posts/botejao_a_motivation_to_write_rust) about 
+In the [last post](/posts/botejao_an_excuse_to_write_rust) about 
 [Botejão](https://github.com/tiberiusferreira/botejao), my Telegram Menu Bot,
  I discussed a feature I would like to add to it:
 allow the user to see how many people are in the restaurants line.

@@ -1,14 +1,21 @@
 ---
 title: "Machine Learning, Rust and SIMD - II"
 date: 2020-02-06T15:37:05-03:00
-draft: true
+draft: false
 ---
 
 It's been a while and a lot happened since the last time. 
 
 The plan with this post was to show the results of optimizing Yolo's hot path for the Raspberry Pi 3B+
 
-I did get into Yolo's codebase and did some profiling. Turns out, most (85%+) of the time was spent in a single function:
+I did get into Yolo's codebase and did some profiling. Turns out, most (85%+) of the time was spent in a single function. 
+
+Which is great news, we can focus our optimization efforts!
+
+
+The weird named function didn't seem to be doing much: 
+
+
 ```C
 void cpu_gemm_nn(int TA, int TB, int M, int N, int K, float ALPHA,
         float *A, int lda,
@@ -28,9 +35,8 @@ void cpu_gemm_nn(int TA, int TB, int M, int N, int K, float ALPHA,
 }
 ``` 
 
-This looked like a weird named function, but it didn't seem to be doing much. 
-
 >I later discovered it was part of the Basic Linear Algebra Subprograms (BLAS) specification and was an acronym for general matrix multiplication.
+
 
 Naively I rewrote it in (safe) Rust and got horrible performance, over 2x slower than the C version.
 Turns out, in such a tight loop bounds checking has a high price. 
@@ -138,13 +144,15 @@ As expected it did boost performance quite a bit!
 
 Here are the final results:
 
-|                | C ARM     | Rust ARM Neon | C ARM OpenMP | Rust ARM Neon OpenMP |
+
+|                | Single Thread     | Single Thread | Multi Thread | Multi Thread |
 |----------------|-----------|---------------|--------------|----------------------|
-| Real           | 5m36.687s | 2m26.723s     | 1m44.369s    | 1m1.510s             |
-| User           | 5m12.121s | 2m13.472s     | 5m26.866s    | 2m40.456s            |
-| Sys            | 0m1.680s  | 0m1.630s      | 0m1.541s     | 0m1.469s             |
-| Real (s)       | 336.687   | 146.723       | 104.369      | 61.510               |
-| Real Speedup % | 100       | 229.47        | 100          | 169.67               |
+|                | C ARM     | Rust ARM Neon | C ARM OpenMP | Rust ARM Neon OpenMP |
+| Real           | 5m36s | 2m26s     | 1m44s    | 1m1s             |
+| User           | 5m12s | 2m13s     | 5m26s    | 2m40s            |
+| Sys            | 0m1s  | 0m1s      | 0m1s     | 0m1s             |
+| Real       | 336s   | 146s       | 104s      | 61s               |
+| Real Speedup  | 1x       | 2.29x        | 1x          | 1.69x               |
 
 
 The plan now was to switch to safe Rust using iterators and maybe replace OpenMP multithreading approach to using the fantastic [Rayon](https://github.com/rayon-rs/rayon)
@@ -152,8 +160,9 @@ library.
 
 However, before getting to it [Smart Campus](http://smartcampus.prefeitura.unicamp.br) told me plans had changed and the code would
 actually run in the University's servers, instead of the Raspberry Pi 3B+. Since Yolo's code has handwritten x86 AVX assembly for this function it made
-little sense to try to beat it and the code itself ran in less than 10s already.
+little sense to try to beat it and the code itself ran in less than 10s already on the server x86 VM.
 
-Nevertheless it was quite a fun project and got me wondering what kind of magic Yolo is using to get suc 
+Nevertheless it was quite a fun project and got me wondering what kind of magic Yolo is using to get such great (and fast) 
+results.
 
    
