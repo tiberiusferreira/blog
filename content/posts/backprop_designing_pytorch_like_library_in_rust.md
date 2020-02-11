@@ -1,5 +1,5 @@
 ---
-title: "Current Deep Learning Ecosystem from a Rust Developer perspective"
+title: "Current Deep Learning Ecosystem from a Rust Developer Perspective"
 date: 2020-02-10T15:21:03-03:00
 draft: false
 ---
@@ -34,8 +34,8 @@ the famous [Two language problem](https://www.quora.com/What-is-the-2-language-p
  
  
 Crossing this barrier is a challenge since the C++ part is normally distributed as a binary, but
-even if one downloaded the source code, crossing this barrier is a challenge, both for my IDE and me (shifting the
-mental model from one language to the other).
+even if one downloaded the source code, it is hard for both me and my IDE to jump between languages. It requires
+ shifting the mental model from one language to the other.
 
 I have also grown very accustomed to the my IDE and compiler working together providing both
 great autocomplete and catching most of my mistakes before or during compilation. 
