@@ -91,7 +91,7 @@ implement only these essential pieces using custom kernels hopefully getting 80%
 Something like Pytorch's [Autograd](https://pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html) system.
 
 This might be a challenge given Rust ownership rules. There are some libraries in this area, such as
-[Wyrm](https://github.com/maciejkula/wyrm) and [Rust-Autograd](https://github.com/raskr/rust-autograd).
+ [Rust-Autograd](https://github.com/raskr/rust-autograd) and [Wyrm](https://github.com/maciejkula/wyrm).
 
 The former uses lazily evaluated graphs which helps with the ownership problems and the later
 uses the Rc<<RefCell<<T>>>> pattern.
