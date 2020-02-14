@@ -129,8 +129,42 @@ Even then, as far as I known, they don't support indexing a tensor and
 using the indexed part of it in the computation graph, which is an essential (but very complicated) feature.  
 
 
+# What do we want to support?
 
+### Training loops
 
+Pytorch has quite ergonomic and flexible training loops.
+ 
+This comes from defining the computational graph by just operating on the tensors themselves as if they were
+"regular" variables (instead of constructing it using a DSL). 
+
+They are also eagerly evaluated. 
+This has the added benefit of being able to print them at any given moment, and when there is a problem the
+ stacktrace normally points to where it is. 
+ 
+Ok, we definitely want that! To get there we need:
+ - Tensor creation
+ - Tensor creation from operation on one or more existing Tensors 
+ - Tensor indexing and operations on the indexed values
+ - Tensors to be used as parameters 
+ - Backpropagation through the Tensors (their gradients calculated)
+ - Way to updated the parameters and reuse them
+
+In order to be usable in multiple Ops, Tensors need to be passed by *immutable* reference.
+At the same time backpropagating the gradients through the computation graph requires the result of an Op to hold a 
+ reference to the operands that originated it. This also makes sure the operands are kept alive.
+ 
+Ok, now when backpropagating we need to actually to mutate the Tensors gradient field, which would require a
+mutable reference to the field itself. Maybe we can get around it by wrapping the gradient field in a 
+[Cell](https://doc.rust-lang.org/std/cell/struct.Cell.html), allowing internal mutability and at the same
+time making sure nobody hold a reference to the gradient field itself (the Cell wrapper prevents it). 
+ 
+    
+
+ 
+  
+ 
+     
  
 
  
