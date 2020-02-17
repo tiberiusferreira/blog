@@ -129,37 +129,87 @@ Even then, as far as I known, they don't support indexing a tensor and
 using the indexed part of it in the computation graph, which is an essential (but very complicated) feature.  
 
 
-# What do we want to support?
+# What experience do we want to provide?
 
-### Training loops
+### Define By Run 
 
-Pytorch has quite ergonomic and flexible training loops.
- 
-This comes from defining the computational graph by just operating on the tensors themselves as if they were
-"regular" variables (instead of constructing it using a DSL). 
+Pytorch has quite ergonomic and flexible training loops. This arguably comes mainly from:
 
-They are also eagerly evaluated. 
-This has the added benefit of being able to print them at any given moment, and when there is a problem the
- stacktrace normally points to where it is. 
- 
-Ok, we definitely want that! To get there we need:
- - Tensor creation
- - Tensor creation from operation on one or more existing Tensors 
- - Tensor indexing and operations on the indexed values
- - Tensors to be used as parameters 
+- Defining the computational graph by just operating on the tensors themselves as if they were
+*"regular"* variables (instead of constructing it using a DSL as with Tensorflow 1.x). 
+
+- Tensor eagerly evaluated, which contributes to the feeling of them being "*just variables*". 
+
+This last point has the added benefit of allowing the user to print them at any given moment between computation 
+ and during a panic the stacktrace normally points to the line where the problem is (in contrast to lazy
+  evaluation where the problem might only show up when the expression is evaluated and not where it is created).
+
+Ok, we definitely want that! 
+  
+### Expected Features
+
+Just to keep in mind other must haves, here is a list:
+
+ - Manual Tensor creation
+ - Tensor creation from operation on one or more existing Tensors
+ - Tensor indexing and operations on the indexed values ***(hard)***
+ - Using same Tensor on multiple Ops ***(hard)***
+ - Tensors to be used as optimizable parameters 
  - Backpropagation through the Tensors (their gradients calculated)
- - Way to updated the parameters and reuse them
+ - Way to updated the parameters ```x = x - 0.1*x_grad``` and reuse them
 
-In order to be usable in multiple Ops, Tensors need to be passed by *immutable* reference.
-At the same time backpropagating the gradients through the computation graph requires the result of an Op to hold a 
- reference to the operands that originated it. This also makes sure the operands are kept alive.
- 
-Ok, now when backpropagating we need to actually to mutate the Tensors gradient field, which would require a
-mutable reference to the field itself. Maybe we can get around it by wrapping the gradient field in a 
+
+
+# Implementation Challenges
+
+The first observation is that:
+
+> In order to be usable in multiple Ops, Tensors need to be passed by *immutable* reference (otherwise they can't be 
+shared).
+
+
+At the same time to back-propagate the gradients through the computation graph we need:
+- Each Tensor to provide a way to access its "parent Op" (because only the Op knows how to set the gradients) 
+- Each Op to access its operands somehow in order to set their gradients
+
+Of course, in order for all this to work all relevant Tensors and Ops need to be kept alive.
+
+Let's check an example:
+
+```Rust
+let x = Tensor::from(2.);
+let y = Tensor::from(3.);
+let z = &x * &y;
+```
+<img src="/post_images/designing_autograd_system_rust/d1.svg" width="300">
+
+
+So here Z needs to hold a reference of some kind to X and Y. Since we want to allow X and Y to be used in another
+operation in the graph (imagine if you could only index a tensor once!), this need to be an immutable reference.
+
+
+However, during backpropagation we need to actually to mutate the Tensors gradient field, which would require a
+mutable reference to the field itself. 
+
+
+```Rust
+let x = Tensor::from(2.);
+let y = Tensor::from(3.);
+let z = &x * &y;
+z.backward();
+```
+
+<img src="/post_images/designing_autograd_system_rust/d2.svg" width="300">
+
+Maybe we can get around it by wrapping the gradient field in a 
 [Cell](https://doc.rust-lang.org/std/cell/struct.Cell.html), allowing internal mutability and at the same
-time making sure nobody hold a reference to the gradient field itself (the Cell wrapper prevents it). 
+time making sure nobody hold a reference to the gradient field itself (the Cell wrapper prevents it) while mutating it. 
  
-    
+The main problem here, is that this lead to pretty much all Tensors borrowing from each other behind the scenes and
+I suspect "distributed borrowing" can lead to an unhappy borrow checker very fast. 
+
+Also, at the risk of premature optimization, Tensors are expected to be created and freed in a loop, 
+ so memory fragmentation can be an issue. 
 
  
   
