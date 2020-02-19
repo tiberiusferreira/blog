@@ -1,5 +1,5 @@
 ---
-title: "Designing an Autograd System with Rust"
+title: "Designing an Autograd System with Rust - First Steps"
 date: 2020-02-12T23:37:58-03:00
 draft: true
 ---
@@ -68,9 +68,9 @@ points out:
                  
 > My intuition is that code far away from my code might as well be in another thread, for all I can reason about what it will do to shared mutable state.
                   
-   Having the underlying value or even type of a given variable being able to change from multiple places and even without  
-  the variable being used at all can be jarring. Multiple mutable references also lead to other problems, such 
-    as iterator invalidations.
+   Having the underlying value or even type of a given variable being able to change from multiple places and even without 
+the variable being used at all can be jarring. Multiple mutable references also lead to other problems, such 
+as iterator invalidations.
   
 #### Iterator Invalidation
 ```Python
@@ -160,7 +160,7 @@ Just to keep in mind other must haves, here is a list:
 
 
 
-# Implementation Challenges
+# Naive Implementation: Distributed Borrowing and Cell
 
 The first observation is that:
 
@@ -203,19 +203,80 @@ z.backward();
 
 Maybe we can get around it by wrapping the gradient field in a 
 [Cell](https://doc.rust-lang.org/std/cell/struct.Cell.html), allowing internal mutability and at the same
-time making sure nobody hold a reference to the gradient field itself (the Cell wrapper prevents it) while mutating it. 
+time making sure nobody holds a reference to the gradient field itself (the Cell wrapper prevents it) while mutating it. 
  
-The main problem here, is that this lead to pretty much all Tensors borrowing from each other behind the scenes and
-I suspect "distributed borrowing" can lead to an unhappy borrow checker very fast. 
+The main problem with this implementation is that this lead to pretty much all Tensors borrowing from each 
+other behind the scenes and I suspect "distributed borrowing" can lead to an unhappy borrow checker very fast. 
 
-Also, at the risk of premature optimization, Tensors are expected to be created and freed in a loop, 
- so memory fragmentation can be an issue. 
+> Also, at the risk of premature optimization, Tensors are expected to be created and freed in a loop, 
+ so memory fragmentation can be an issue. Let's not worry about that now.
 
- 
+Let's try to implement it anyway.
+
+We start with the Tensor structure. To keep it simple, lets pretend it only holds a single f32 value (instead of 
+an N dimensional array). 
+
+It needs to keep track of which Operation created it in order to set its operands gradients, so it needs either to own
+or have a reference to the Op that created it. Lets have it owned to keep it simple. 
   
- 
-     
- 
+```Rust
+struct Tensor{
+    val: f32,
+    grad: f32,
+    op: Option<Op>
+}
+```
 
- 
+The Op needs to keep track of its operands and set their gradient when necessary, but it can't own the operands 
+otherwise we won't be able to reuse the same Tensor in multiple operations, so we make it hold a reference.
 
+```Rust
+struct Op<'a>{
+    operands: [&'a Tensor; 2]
+}
+```
+
+But now, we need to change the Tensor signature to keep track of this lifetime: 
+
+```Rust
+struct Tensor<'a>{
+    val: f32,
+    grad: f32,
+    op: Option<Op<'a>>
+}
+```
+ 
+But now the Op signature which depends on the Tensor one has to change too: 
+
+
+```Rust
+struct Op<'a, 'b>{
+    operands: [&'a Tensor<'b>; 2]
+}
+```
+
+Now the Tensor signature has to change again... Ok, so this leads to infinite lifetimes.
+
+One could argue that making the two lifetimes of Op equal solves the problem:
+
+```Rust
+struct Op<'a>{
+    operands: [&'a Tensor<'a>; 2]
+}
+struct Tensor<'a>{
+    val: f32,
+    grad: f32,
+    op: Option<Op<'a>>
+}
+```
+
+But now, as far as I know, we are saying that the reference to the Tensor that Op holds lives as long as the 
+Tensor itself and all the Ops the Tensor itself holds, which forces the Tensors to have the exact same lifetime.
+This can only happen if they are inside the same container (like an arena allocator).
+
+For more about why having the same lifetime can be problematic, check 
+[Simon Sapin post on arenas and dropcheck](https://exyr.org/2018/rust-arenas-vs-dropck/)
+
+Ok, this seems interesting. This post is running quite long already, so next time we will investigate how arena 
+allocation can help us, drawing heavily from [Rufflewind's Post](https://rufflewind.com/2016-12-30/reverse-mode-automatic-differentiation)
+on reverse mode automatic differentiation.

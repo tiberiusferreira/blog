@@ -288,7 +288,7 @@ implement only these essential pieces using custom kernels hopefully getting 80%
 <h3 id="automatic-differentiation">Automatic Differentiation</h3>
 <p>Something like Pytorch&rsquo;s <a href="https://pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html">Autograd</a> system.</p>
 <p>This might be a challenge given Rust ownership rules. There are some libraries in this area, such as
-<a href="https://github.com/maciejkula/wyrm">Wyrm</a> and <a href="https://github.com/raskr/rust-autograd">Rust-Autograd</a>.</p>
+<a href="https://github.com/raskr/rust-autograd">Rust-Autograd</a> and <a href="https://github.com/maciejkula/wyrm">Wyrm</a>.</p>
 <p>The former uses lazily evaluated graphs which helps with the ownership problems and the later
 uses the Rc&laquo;RefCell&laquo;T&raquo;&raquo; pattern.</p>
 <p>I&rsquo;ve been <a href="https://github.com/tiberiusferreira/Autograd-Experiments">exploring alternatives</a>, but I don&rsquo;t have anything

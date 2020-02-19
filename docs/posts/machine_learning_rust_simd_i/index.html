@@ -246,15 +246,15 @@ check by themselves if the line is too long. It would also help debug any weird 
 <li>Run on a Raspberry Pi 3B (this is the device provided by <a href="http://smartcampus.prefeitura.unicamp.br">Smart Campus</a>)</li>
 </ul>
 <p>So I went ahead and took some sample pictures:</p>
-<!-- raw HTML omitted -->
+<img src="https://tiberiusferreira.github.io/blog/post_images/p2/p1_day.png" width="1000">
 <p>Its 2019, we have (almost) self driving cars, so surely there are many good solutions to person
 recognition in images.</p>
 <p>Googling &ldquo;State of the art pedestrian recognition&rdquo; quickly lead me to <a href="https://pjreddie.com/darknet/yolo/">Yolo</a></p>
 <p>After compiling, I tested on the sample image and was quite pleased with the results.</p>
-<!-- raw HTML omitted -->
+<img src="https://tiberiusferreira.github.io/blog/post_images/p2/p1_det.png" width="1000">
 <p>It even worked when it was dark:</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<img src="https://tiberiusferreira.github.io/blog/post_images/p2/p2.png" width="1000">
+<img src="https://tiberiusferreira.github.io/blog/post_images/p2/p2_det.png" width="1000">
 <p>Sadly running the lastest Yolo-V3 took almost half a minute
 on my 2017 Macbook Pro CPU and upwards of 1.6GB of RAM.
 While the CPU time would be much worse on the Raspberry, it would not
@@ -274,7 +274,7 @@ however it failed to detect some people in the images which would make anonymizi
 around each person. So it was just a matter of digging into the codebase and changing it to fill the
 whole box instead of just drawing a contour. By the tenth <em>Segmentation Fault</em> most of my C memories
 had come back and I had some results to show.</p>
-<!-- raw HTML omitted -->
+ <img src="https://tiberiusferreira.github.io/blog/post_images/p2/filled_boxes.jpg" width="1000">
 <h2 id="getting-it-to-work-on-a-raspberry">Getting it to work on a Raspberry</h2>
 <p>After compiling Yolo and running it for the first time on the Raspberry I was met with a the famous <em>Segmentation Fault</em>.</p>
 <p>I expected it to run out of memory, but not crash immediately. Switching the configuration and neural net weights to Yolo-tiny
