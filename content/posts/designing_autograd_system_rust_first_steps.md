@@ -1,7 +1,7 @@
 ---
 title: "Designing an Autograd System with Rust - First Steps"
 date: 2020-02-12T23:37:58-03:00
-draft: true
+draft: false
 ---
 
 # Why do it?

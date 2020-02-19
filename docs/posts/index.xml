@@ -6,10 +6,21 @@
     <description>Recent content in Posts on TiberiusBlog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Feb 2020 15:21:03 -0300</lastBuildDate>
+    <lastBuildDate>Wed, 12 Feb 2020 23:37:58 -0300</lastBuildDate>
     
 	<atom:link href="https://tiberiusferreira.github.io/blog/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Designing an Autograd System with Rust - First Steps</title>
+      <link>https://tiberiusferreira.github.io/blog/posts/designing_autograd_system_rust_first_steps/</link>
+      <pubDate>Wed, 12 Feb 2020 23:37:58 -0300</pubDate>
+      
+      <guid>https://tiberiusferreira.github.io/blog/posts/designing_autograd_system_rust_first_steps/</guid>
+      <description>Why do it? Well, there is certainly a gap in the ecosystem currently and at least some people are interested.
+In theory, Rust can do whatever C/C++ does given enough effort. Since most of Pytorch/Tensorflow is C++/CUDA, at least the C++ part should be doable.
+Also, I&amp;rsquo;m too naive to not try it, but as alluded in a previous post I&amp;rsquo;m aware that it might not be so easy to follow Rust&amp;rsquo;s ownership and borrowing rules while providing similar ergonomics as Pytorch.</description>
+    </item>
     
     <item>
       <title>Current Deep Learning Ecosystem from a Rust Developer Perspective</title>
