@@ -17,7 +17,10 @@ Since most of Pytorch/Tensorflow is C++/CUDA, at least the C++ part
 Also, I'm too naive to not try it, but as alluded 
 in [a previous post](/blog/posts/current_deep_learning_ecosystem_from_a_rust_developer_perspective/)
 I'm aware that it might not be so easy to follow Rust's ownership and borrowing
-rules while providing similar ergonomics as Pytorch. 
+rules while providing similar ergonomics as Pytorch.
+
+> In this post I try to explore the problem space and some tentative implementations. If you think
+> I'm going in the wrong direction and have a better idea of how to proceed, please, let me know.
 
 # How it's done in Pytorch
 
