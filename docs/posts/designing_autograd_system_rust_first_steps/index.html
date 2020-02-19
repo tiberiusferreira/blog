@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Designing an Autograd System with Rust - First Steps - TiberiusBlog</title>
+  <meta name="description" content="Why do it? Well, there is certainly a gap in the ecosystem currently and at least some people are interested.
+In theory, Rust can do whatever C/C&#43;&#43; does given enough effort. Since most of Pytorch/Tensorflow is C&#43;&#43;/CUDA, at least the C&#43;&#43; part should be doable.
+Also, I&rsquo;m too naive to not try it, but as alluded in a previous post I&rsquo;m aware that it might not be so easy to follow Rust&rsquo;s ownership and borrowing rules while providing similar ergonomics as Pytorch."><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "TiberiusBlog",
+    
+    "url": "https:\/\/tiberiusferreira.github.io\/blog\/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/tiberiusferreira.github.io\/blog\/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/tiberiusferreira.github.io\/blog\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/tiberiusferreira.github.io\/blog\/posts\/designing_autograd_system_rust_first_steps\/",
+          "name": "Designing an autograd system with rust first steps"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : ""
+  },
+  "headline": "Designing an Autograd System with Rust - First Steps",
+  "description" : "Why do it? Well, there is certainly a gap in the ecosystem currently and at least some people are interested.\nIn theory, Rust can do whatever C\/C\x2b\x2b does given enough effort. Since most of Pytorch\/Tensorflow is C\x2b\x2b\/CUDA, at least the C\x2b\x2b part should be doable.\nAlso, I\x26rsquo;m too naive to not try it, but as alluded in a previous post I\x26rsquo;m aware that it might not be so easy to follow Rust\x26rsquo;s ownership and borrowing rules while providing similar ergonomics as Pytorch.",
+  "inLanguage" : "en",
+  "wordCount":  1571 ,
+  "datePublished" : "2020-02-12T23:37:58",
+  "dateModified" : "2020-02-12T23:37:58",
+  "image" : "https:\/\/tiberiusferreira.github.io\/blog\/",
+  "keywords" : [ "" ],
+  "mainEntityOfPage" : "https:\/\/tiberiusferreira.github.io\/blog\/posts\/designing_autograd_system_rust_first_steps\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/tiberiusferreira.github.io\/blog\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/tiberiusferreira.github.io\/blog\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Designing an Autograd System with Rust - First Steps" />
+<meta property="og:description" content="Why do it? Well, there is certainly a gap in the ecosystem currently and at least some people are interested.
+In theory, Rust can do whatever C/C&#43;&#43; does given enough effort. Since most of Pytorch/Tensorflow is C&#43;&#43;/CUDA, at least the C&#43;&#43; part should be doable.
+Also, I&rsquo;m too naive to not try it, but as alluded in a previous post I&rsquo;m aware that it might not be so easy to follow Rust&rsquo;s ownership and borrowing rules while providing similar ergonomics as Pytorch.">
+<meta property="og:url" content="https://tiberiusferreira.github.io/blog/posts/designing_autograd_system_rust_first_steps/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="TiberiusBlog" />
+
+  <meta name="twitter:title" content="Designing an Autograd System with Rust - First Steps" />
+  <meta name="twitter:description" content="Why do it? Well, there is certainly a gap in the ecosystem currently and at least some people are interested.
+In theory, Rust can do whatever C/C&#43;&#43; does given enough effort. Since most of …">
+  <meta name="twitter:card" content="summary" />
+  <meta name="generator" content="Hugo 0.64.0" />
+  <link rel="alternate" href="https://tiberiusferreira.github.io/blog/index.xml" type="application/rss+xml" title="TiberiusBlog"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://tiberiusferreira.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://tiberiusferreira.github.io/blog/css/syntax.css" /><link rel="stylesheet" href="https://tiberiusferreira.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://tiberiusferreira.github.io/blog/">TiberiusBlog</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="Blog" href="https://tiberiusferreira.github.io/blog/">Blog</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="https://tiberiusferreira.github.io/blog/page/about/">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="posts-heading">
+              
+                <h1>Designing an Autograd System with Rust - First Steps</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h1 id="why-do-it">Why do it?</h1>
+<p>Well, there is certainly a gap in the ecosystem currently and at least
+<a href="https://github.com/rust-ml/discussion/issues/1">some</a> people
+are interested.</p>
+<p>In theory, Rust can do whatever C/C++ does given enough effort.
+Since most of Pytorch/Tensorflow is C++/CUDA, at least the C++ part
+should be doable.</p>
+<p>Also, I&rsquo;m too naive to not try it, but as alluded
+in <a href="https://tiberiusferreira.github.io/blog/blog/posts/current_deep_learning_ecosystem_from_a_rust_developer_perspective/">a previous post</a>
+I&rsquo;m aware that it might not be so easy to follow Rust&rsquo;s ownership and borrowing
+rules while providing similar ergonomics as Pytorch.</p>
+<blockquote>
+<p>In this post I try to explore the problem space and some tentative implementations. If you think
+I&rsquo;m going in the wrong direction and have a better idea of how to proceed, please, let me know.</p>
+</blockquote>
+<h1 id="how-its-done-in-pytorch">How it&rsquo;s done in Pytorch</h1>
+<p>Let&rsquo;s look at some minimal Pytorch code and try to figure out what is going on:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#f92672">import</span> torch;
+
+<span style="color:#75715e"># create two Tensors</span>
+x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tensor([<span style="color:#ae81ff">2</span>], requires_grad<span style="color:#f92672">=</span>True, dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float)
+y <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tensor([<span style="color:#ae81ff">3</span>], requires_grad<span style="color:#f92672">=</span>True, dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float)
+
+<span style="color:#75715e"># loop twice </span>
+<span style="color:#66d9ef">for</span> k <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>):
+  z <span style="color:#f92672">=</span> (x<span style="color:#f92672">*</span>y)
+  z<span style="color:#f92672">.</span>backward() <span style="color:#75715e"># fills x and y gradients, so z must have a mutable reference of some kind to x and y</span>
+  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">x_grad =</span><span style="color:#e6db74">&#39;</span>, x<span style="color:#f92672">.</span>grad)
+  x<span style="color:#f92672">.</span>data <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span>data<span style="color:#f92672">-</span><span style="color:#ae81ff">0.1</span><span style="color:#f92672">*</span>x<span style="color:#f92672">.</span>grad <span style="color:#75715e"># here we are modifying x in-place, while z holds the mutable reference</span>
+  x<span style="color:#f92672">.</span>grad<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>zero_()  <span style="color:#75715e"># zeroing the gradients of x</span>
+  <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">x =</span><span style="color:#e6db74">&#39;</span>, x)
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">z =</span><span style="color:#e6db74">&#39;</span>, z)
+</code></pre></div><p>Which runs just fine and outputs:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python">x_grad <span style="color:#f92672">=</span> tensor([<span style="color:#ae81ff">3.</span>])
+x <span style="color:#f92672">=</span> tensor([<span style="color:#ae81ff">1.7000</span>], requires_grad<span style="color:#f92672">=</span>True)
+x_grad <span style="color:#f92672">=</span> tensor([<span style="color:#ae81ff">3.</span>])
+x <span style="color:#f92672">=</span> tensor([<span style="color:#ae81ff">1.4000</span>], requires_grad<span style="color:#f92672">=</span>True)
+z <span style="color:#f92672">=</span> tensor([<span style="color:#ae81ff">5.1000</span>], grad_fn<span style="color:#f92672">=</span><span style="color:#f92672">&lt;</span>MulBackward0<span style="color:#f92672">&gt;</span>)
+</code></pre></div><p>The code above this quite straight forward, but highlights why just translating this to Rust cannot work.</p>
+<h3 id="why-this-doesnt-and-shouldnt-translate-well-to-rust">Why this doesn&rsquo;t (and shouldn&rsquo;t) translate well to Rust</h3>
+<p>Python/Pytorch doesn&rsquo;t mind having multiple mutable references active at the same time.</p>
+<p>This is <em>partially</em> mitigated due to Python ensuring memory safety by using reference counting (and also GC to break cycles),
+so it can, for the most part, avoid danging pointers. Not having real parallelism due to the
+<a href="https://wiki.python.org/moin/GlobalInterpreterLock">GIL</a> helps alleviate the classic data race/race conditions problems
+of mutable aliasing.</p>
+<p>Unfortunately, as a quote from this fantastic post about
+<a href="https://manishearth.github.io/blog/2015/05/17/the-problem-with-shared-mutability/">The Problem With Single-threaded Shared Mutability</a>
+points out:</p>
+<blockquote>
+<p>My intuition is that code far away from my code might as well be in another thread, for all I can reason about what it will do to shared mutable state.</p>
+</blockquote>
+<p>Having the underlying value or even type of a given variable being able to change from multiple places and even without
+the variable being used at all can be jarring. Multiple mutable references also lead to other problems, such
+as iterator invalidations.</p>
+<h4 id="iterator-invalidation">Iterator Invalidation</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python">lst <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+<span style="color:#66d9ef">for</span> item <span style="color:#f92672">in</span> lst:
+  <span style="color:#66d9ef">if</span> item <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+    lst<span style="color:#f92672">.</span>remove(item)
+
+<span style="color:#66d9ef">print</span>(lst) <span style="color:#75715e"># Prints: [1, 2, 3]</span>
+</code></pre></div><h4 id="underlying-value-changing-indirectly">Underlying value changing indirectly</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#f92672">import</span> torch;
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">very_complex_long_fn</span>(val):
+    <span style="color:#75715e">#Lots of code</span>
+    val<span style="color:#f92672">.</span>data <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tensor([<span style="color:#ae81ff">20</span>], requires_grad<span style="color:#f92672">=</span>True, dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float)
+    <span style="color:#75715e">#Lots of code</span>
+
+x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tensor([<span style="color:#ae81ff">2</span>], requires_grad<span style="color:#f92672">=</span>True, dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float)
+y <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tensor([<span style="color:#ae81ff">3</span>], requires_grad<span style="color:#f92672">=</span>True, dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float)
+
+a <span style="color:#f92672">=</span> [x, y]
+
+k <span style="color:#f92672">=</span> a[<span style="color:#ae81ff">0</span>] 
+
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">K initial value = </span><span style="color:#e6db74">&#39;</span>, k) <span style="color:#75715e"># prints: K initial value =  tensor([2.], requires_grad=True)</span>
+<span style="color:#75715e">#Lots of code</span>
+very_complex_long_fn(a[<span style="color:#ae81ff">0</span>])
+<span style="color:#75715e">#Lots of code</span>
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">K final value = </span><span style="color:#e6db74">&#39;</span>, k) <span style="color:#75715e"># prints: K final value =  tensor([20.], requires_grad=True)</span>
+</code></pre></div><p>While it can be quite time consuming tracking down bugs involving a variable value (or type) changing unexpectedly,
+having an interpreter helps ensure it &ldquo;crashes safely&rdquo;, by throwing an
+<code>Python AttributeError: 'SomeObj' object has no attribute 'some_attr'</code> kind of error.</p>
+<p>Most importantly, this is pretty much all Python can do since there is no check or compilation phase before
+running the program. But in Rust, the idea is to prevent these kind of problems as much as possible during the compilation
+phase, hence the ownership/borrowing rules.</p>
+<blockquote>
+<p>I&rsquo;m not trying to bash on Python. It is an excellent language for what it was set out to do (hence the widespread
+adoption). The point I&rsquo;m trying to make here is that its values are very different from Rust&rsquo;s ones, so straight
+forward Python (or even C/C++) -&gt; Rust translation may (and sometimes should) not work at the risk of violating
+some of the core values Rust was built to provide.</p>
+</blockquote>
+<h3 id="prior-work">Prior Work</h3>
+<p>Some people have tackled this problem before, such as <a href="https://github.com/raskr/rust-autograd">Rust-Autograd</a>
+using lazily evaluated computation graphs and <a href="https://github.com/maciejkula/wyrm">Wyrm</a> postponing the borrow checking
+until runtime by using Rc&laquo;RefCell&laquo;T&raquo;&raquo;.</p>
+<p>Even then, as far as I known, they don&rsquo;t support indexing a tensor and
+using the indexed part of it in the computation graph, which is an essential (but very complicated) feature.</p>
+<h1 id="what-experience-do-we-want-to-provide">What experience do we want to provide?</h1>
+<h3 id="define-by-run">Define By Run</h3>
+<p>Pytorch has quite ergonomic and flexible training loops. This arguably comes mainly from:</p>
+<ul>
+<li>
+<p>Defining the computational graph by just operating on the tensors themselves as if they were
+<em>&ldquo;regular&rdquo;</em> variables (instead of constructing it using a DSL as with Tensorflow 1.x).</p>
+</li>
+<li>
+<p>Tensor eagerly evaluated, which contributes to the feeling of them being &ldquo;<em>just variables</em>&quot;.</p>
+</li>
+</ul>
+<p>This last point has the added benefit of allowing the user to print them at any given moment between computation
+and during a panic the stacktrace normally points to the line where the problem is (in contrast to lazy
+evaluation where the problem might only show up when the expression is evaluated and not where it is created).</p>
+<p>Ok, we definitely want that!</p>
+<h3 id="expected-features">Expected Features</h3>
+<p>Just to keep in mind other must haves, here is a list:</p>
+<ul>
+<li>Manual Tensor creation</li>
+<li>Tensor creation from operation on one or more existing Tensors</li>
+<li>Tensor indexing and operations on the indexed values <em><strong>(hard)</strong></em></li>
+<li>Using same Tensor on multiple Ops <em><strong>(hard)</strong></em></li>
+<li>Tensors to be used as optimizable parameters</li>
+<li>Backpropagation through the Tensors (their gradients calculated)</li>
+<li>Way to updated the parameters <code>x = x - 0.1*x_grad</code> and reuse them</li>
+</ul>
+<h1 id="naive-implementation-distributed-borrowing-and-cell">Naive Implementation: Distributed Borrowing and Cell</h1>
+<p>The first observation is that:</p>
+<blockquote>
+<p>In order to be usable in multiple Ops, Tensors need to be passed by <em>immutable</em> reference (otherwise they can&rsquo;t be
+shared).</p>
+</blockquote>
+<p>At the same time to back-propagate the gradients through the computation graph we need:</p>
+<ul>
+<li>Each Tensor to provide a way to access its &ldquo;parent Op&rdquo; (because only the Op knows how to set the gradients)</li>
+<li>Each Op to access its operands somehow in order to set their gradients</li>
+</ul>
+<p>Of course, in order for all this to work all relevant Tensors and Ops need to be kept alive.</p>
+<p>Let&rsquo;s check an example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Rust" data-lang="Rust"><span style="color:#66d9ef">let</span> x <span style="color:#f92672">=</span> Tensor::from(<span style="color:#ae81ff">2.</span>);
+<span style="color:#66d9ef">let</span> y <span style="color:#f92672">=</span> Tensor::from(<span style="color:#ae81ff">3.</span>);
+<span style="color:#66d9ef">let</span> z <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>x <span style="color:#f92672">*</span> <span style="color:#f92672">&amp;</span>y;
+</code></pre></div><img src="https://tiberiusferreira.github.io/blog/post_images/designing_autograd_system_rust/d1.svg" width="300">
+<p>So here Z needs to hold a reference of some kind to X and Y. Since we want to allow X and Y to be used in another
+operation in the graph (imagine if you could only index a tensor once!), this need to be an immutable reference.</p>
+<p>However, during backpropagation we need to actually to mutate the Tensors gradient field, which would require a
+mutable reference to the field itself.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Rust" data-lang="Rust"><span style="color:#66d9ef">let</span> x <span style="color:#f92672">=</span> Tensor::from(<span style="color:#ae81ff">2.</span>);
+<span style="color:#66d9ef">let</span> y <span style="color:#f92672">=</span> Tensor::from(<span style="color:#ae81ff">3.</span>);
+<span style="color:#66d9ef">let</span> z <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>x <span style="color:#f92672">*</span> <span style="color:#f92672">&amp;</span>y;
+z.backward();
+</code></pre></div><img src="https://tiberiusferreira.github.io/blog/post_images/designing_autograd_system_rust/d2.svg" width="300">
+<p>Maybe we can get around it by wrapping the gradient field in a
+<a href="https://doc.rust-lang.org/std/cell/struct.Cell.html">Cell</a>, allowing internal mutability and at the same
+time making sure nobody holds a reference to the gradient field itself (the Cell wrapper prevents it) while mutating it.</p>
+<p>The main problem with this implementation is that this lead to pretty much all Tensors borrowing from each
+other behind the scenes and I suspect &ldquo;distributed borrowing&rdquo; can lead to an unhappy borrow checker very fast.</p>
+<blockquote>
+<p>Also, at the risk of premature optimization, Tensors are expected to be created and freed in a loop,
+so memory fragmentation can be an issue. Let&rsquo;s not worry about that now.</p>
+</blockquote>
+<p>Let&rsquo;s try to implement it anyway.</p>
+<p>We start with the Tensor structure. To keep it simple, lets pretend it only holds a single f32 value (instead of
+an N dimensional array).</p>
+<p>It needs to keep track of which Operation created it in order to set its operands gradients, so it needs either to own
+or have a reference to the Op that created it. Lets have it owned to keep it simple.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Rust" data-lang="Rust"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Tensor</span>{
+    val: <span style="color:#66d9ef">f32</span>,
+    grad: <span style="color:#66d9ef">f32</span>,
+    op: Option<span style="color:#f92672">&lt;</span>Op<span style="color:#f92672">&gt;</span>
+}
+</code></pre></div><p>The Op needs to keep track of its operands and set their gradient when necessary, but it can&rsquo;t own the operands
+otherwise we won&rsquo;t be able to reuse the same Tensor in multiple operations, so we make it hold a reference.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Rust" data-lang="Rust"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Op</span><span style="color:#f92672">&lt;</span><span style="color:#a6e22e">&#39;a</span><span style="color:#f92672">&gt;</span>{
+    operands: [<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">&#39;a</span> Tensor; <span style="color:#ae81ff">2</span>]
+}
+</code></pre></div><p>But now, we need to change the Tensor signature to keep track of this lifetime:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Rust" data-lang="Rust"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Tensor</span><span style="color:#f92672">&lt;</span><span style="color:#a6e22e">&#39;a</span><span style="color:#f92672">&gt;</span>{
+    val: <span style="color:#66d9ef">f32</span>,
+    grad: <span style="color:#66d9ef">f32</span>,
+    op: Option<span style="color:#f92672">&lt;</span>Op<span style="color:#f92672">&lt;</span><span style="color:#a6e22e">&#39;a</span><span style="color:#f92672">&gt;</span><span style="color:#f92672">&gt;</span>
+}
+</code></pre></div><p>But now the Op signature which depends on the Tensor one has to change too:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Rust" data-lang="Rust"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Op</span><span style="color:#f92672">&lt;</span><span style="color:#a6e22e">&#39;a</span>, <span style="color:#a6e22e">&#39;b</span><span style="color:#f92672">&gt;</span>{
+    operands: [<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">&#39;a</span> Tensor<span style="color:#f92672">&lt;</span><span style="color:#a6e22e">&#39;b</span><span style="color:#f92672">&gt;</span>; <span style="color:#ae81ff">2</span>]
+}
+</code></pre></div><p>Now the Tensor signature has to change again&hellip; Ok, so this leads to infinite lifetimes.</p>
+<p>One could argue that making the two lifetimes of Op equal solves the problem:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Rust" data-lang="Rust"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Op</span><span style="color:#f92672">&lt;</span><span style="color:#a6e22e">&#39;a</span><span style="color:#f92672">&gt;</span>{
+    operands: [<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">&#39;a</span> Tensor<span style="color:#f92672">&lt;</span><span style="color:#a6e22e">&#39;a</span><span style="color:#f92672">&gt;</span>; <span style="color:#ae81ff">2</span>]
+}
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Tensor</span><span style="color:#f92672">&lt;</span><span style="color:#a6e22e">&#39;a</span><span style="color:#f92672">&gt;</span>{
+    val: <span style="color:#66d9ef">f32</span>,
+    grad: <span style="color:#66d9ef">f32</span>,
+    op: Option<span style="color:#f92672">&lt;</span>Op<span style="color:#f92672">&lt;</span><span style="color:#a6e22e">&#39;a</span><span style="color:#f92672">&gt;</span><span style="color:#f92672">&gt;</span>
+}
+</code></pre></div><p>But now, as far as I know, we are saying that the reference to the Tensor that Op holds lives as long as the
+Tensor itself and all the Ops the Tensor itself holds, which forces the Tensors to have the exact same lifetime.
+This can only happen if they are inside the same container (like an arena allocator).</p>
+<p>For more about why having the same lifetime can be problematic, check
+<a href="https://exyr.org/2018/rust-arenas-vs-dropck/">Simon Sapin post on arenas and dropcheck</a></p>
+<p>Ok, this seems interesting. This post is running quite long already, so next time we will investigate how arena
+allocation can help us, drawing heavily from <a href="https://rufflewind.com/2016-12-30/reverse-mode-automatic-differentiation">Rufflewind&rsquo;s Post</a>
+on reverse mode automatic differentiation.</p>
+
+
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://tiberiusferreira.github.io/blog/posts/current_deep_learning_ecosystem_from_a_rust_developer_perspective/" data-toggle="tooltip" data-placement="top" title="Current Deep Learning Ecosystem from a Rust Developer Perspective">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2020
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://tiberiusferreira.github.io/blog/">TiberiusBlog</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="https://gohugo.io">Hugo v0.64.0</a> powered &nbsp;&bull;&nbsp; Theme <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> adapted from <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://tiberiusferreira.github.io/blog/js/main.js"></script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://tiberiusferreira.github.io/blog/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+
